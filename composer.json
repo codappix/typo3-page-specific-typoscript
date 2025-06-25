@@ -1,0 +1,46 @@
+{
+    "name": "codappix/typo3-page-specific-typoscript",
+    "description": "Loads TypoScript files from file system, based on current Page",
+    "type": "typo3-cms-extension",
+    "license": "GPL-2.0-or-later",
+    "autoload": {
+        "psr-4": {
+            "Codappix\\PageSpecificTypoScript\\": "Classes/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Codappix\\PageSpecificTypoScript\\Tests\\": "Tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Daniel Siepmann",
+            "email": "daniel.siepmann@codappix.com"
+        }
+    ],
+    "require": {
+        "php": "^8.1 || ^8.2 || ^8.3 || ^8.4",
+        "typo3/cms-core": "^12.4 || ^13.4"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.4",
+        "phpstan/phpstan": "^2.0",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "typo3/testing-framework": "^8.2"
+    },
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "codappix_pagespecific_typoscript",
+            "web-dir": ".Build/web"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "typo3/class-alias-loader": true,
+            "typo3/cms-composer-installers": true
+        },
+        "lock": false,
+        "sort-packages": true
+    }
+}
