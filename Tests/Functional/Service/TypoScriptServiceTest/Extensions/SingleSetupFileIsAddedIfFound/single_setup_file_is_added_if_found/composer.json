@@ -1,0 +1,16 @@
+{
+    "name": "codappix/single-setup-file-is-added-if-found",
+    "description": "",
+    "type": "typo3-cms-extension",
+    "license": [
+        "GPL-2.0-or-later"
+    ],
+    "require": {
+        "codappix/single-setup-file-is-added-if-found0": "*"
+    },
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "single_setup_file_is_added_if_found"
+        }
+    }
+}

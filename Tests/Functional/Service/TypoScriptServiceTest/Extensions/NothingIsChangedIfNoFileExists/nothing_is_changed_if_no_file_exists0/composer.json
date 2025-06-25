@@ -1,0 +1,13 @@
+{
+    "name": "codappix/nothing-is-changed-if-no-file-exists0",
+    "description": "",
+    "type": "typo3-cms-extension",
+    "license": [
+        "GPL-2.0-or-later"
+    ],
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "nothing_is_changed_if_no_file_exists0"
+        }
+    }
+}

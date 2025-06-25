@@ -15,3 +15,21 @@ This prevents tools like `fractor
 Also many developers consider it best practice to not maintain TypoScript or Page
 TSconfig within the database. Instead it should be in the file system, allowing
 version control and deployment.
+
+Usage
+=====
+
+Once installed, the extension will check the following locations, within any active
+TYPO3 extension and include found files if any:
+
+TypoScript Setup:
+   Configuration/TypoScript/PageSpecific/<pageUid>/setup.typoscript
+TypoScript Constants:
+   Configuration/TypoScript/PageSpecific/<pageUid>/constants.typoscript
+Page TSconfig:
+   Configuration/TSconfig/PageSpecific/<pageUid>/Setup.tsconfig
+
+TODO
+====
+
+#. Implement use case for User TSconfig.
