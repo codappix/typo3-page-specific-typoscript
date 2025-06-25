@@ -1,0 +1,25 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Offset int on array\{int\: array\<string\>\} on left side of \?\? does not exist\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: Tests/Unit/EventListener/PagesTsConfigIncludeEventListenerTest.php
+
+		-
+			message: '#^Anonymous function should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 2
+			path: Tests/Unit/EventListener/TemplateServiceEventListenerTest.php
+
+		-
+			message: '#^Offset int on array\{int\: array\<string\>\} on left side of \?\? does not exist\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: Tests/Unit/EventListener/TemplateServiceEventListenerTest.php
+
+		-
+			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, Closure\(array\)\: string given\.$#'
+			identifier: argument.type
+			count: 2
+			path: Tests/Unit/EventListener/TemplateServiceEventListenerTest.php

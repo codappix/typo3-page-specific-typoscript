@@ -1,0 +1,17 @@
+{
+    "name": "codappix/only-requested-files-are-added",
+    "description": "",
+    "type": "typo3-cms-extension",
+    "license": [
+        "GPL-2.0-or-later"
+    ],
+    "require": {
+        "codappix/only-requested-files-are-added0": "*"
+    },
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "only_requested_files_are_added"
+        }
+    }
+}
+

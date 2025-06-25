@@ -1,0 +1,16 @@
+{
+    "name": "codappix/multiple-setup-and-constant-files-are-added-if-found1",
+    "description": "",
+    "type": "typo3-cms-extension",
+    "license": [
+        "GPL-2.0-or-later"
+    ],
+    "require": {
+        "codappix/multiple-setup-and-constant-files-are-added-if-found": "*"
+    },
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "multiple_setup_and_constant_files_are_added_if_found1"
+        }
+    }
+}
