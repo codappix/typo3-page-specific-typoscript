@@ -8,24 +8,20 @@ name: 'CI'
 
 jobs:
   check-composer:
-    runs-on: 'ubuntu-latest'
+    runs-on: 'self-hosted'
     steps:
-      - uses: 'actions/checkout@v3'
+      - uses: 'actions/checkout@v5'
 
       - name: 'Install PHP'
-        uses: 'shivammathur/setup-php@v2'
+        uses: 'actions/setup-php@v2'
         with:
           php-version: '8.4'
-          coverage: 'none'
-          tools: 'composer:v2'
-        env:
-          COMPOSER_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
 
       - name: 'Validate composer.json'
         run: 'composer validate'
 
   php-linting:
-    runs-on: 'ubuntu-latest'
+    runs-on: 'self-hosted'
     strategy:
       matrix:
         php-version:
@@ -35,35 +31,41 @@ jobs:
           - 8.4
     steps:
       - name: 'Checkout'
-        uses: 'actions/checkout@v3'
+        uses: 'actions/checkout@v5'
 
       - name: 'Install PHP'
-        uses: 'shivammathur/setup-php@v2'
+        uses: 'actions/setup-php@v2'
         with:
           php-version: '${{ matrix.php-version }}'
-          coverage: 'none'
 
       - name: 'PHP lint'
-        run: "find *.php Classes Configuration Tests -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l"
+        run: "find .*.php Classes Configuration Tests -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l"
 
   xml-linting:
-    runs-on: 'ubuntu-latest'
+    runs-on: 'self-hosted'
     needs:
       - check-composer
     steps:
-      - uses: 'actions/checkout@v3'
+      - uses: 'actions/checkout@v5'
 
       - name: 'Install PHP'
-        uses: 'shivammathur/setup-php@v2'
+        uses: 'actions/setup-php@v2'
         with:
           php-version: '8.4'
-          coverage: 'none'
-          tools: 'composer:v2'
-        env:
-          COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 'Install xmllint'
         run: 'sudo apt update && sudo apt install libxml2-utils'
+
+      - name: 'Get composer cache directory'
+        id: 'composer-cache'
+        run: 'echo "dir=$(composer config cache-files-dir)" >> $FORGEJO_OUTPUT'
+
+      - name: 'Cache dependencies'
+        uses: 'actions/cache@v4'
+        with:
+          path: '${{ steps.composer-cache.outputs.dir }}'
+          key: 'composer'
+          restore-keys: 'composer'
 
       - name: 'Install dependencies'
         run: 'composer update --prefer-dist --no-progress'
@@ -72,18 +74,25 @@ jobs:
         run: 'xmllint --schema vendor/phpunit/phpunit/phpunit.xsd --noout phpunit.xml.dist'
 
   coding-guideline:
-    runs-on: 'ubuntu-latest'
+    runs-on: 'self-hosted'
     steps:
-      - uses: 'actions/checkout@v3'
+      - uses: 'actions/checkout@v5'
 
       - name: 'Install PHP'
-        uses: 'shivammathur/setup-php@v2'
+        uses: 'actions/setup-php@v2'
         with:
           php-version: '8.3'
-          coverage: 'none'
-          tools: 'composer:v2'
-        env:
-          COMPOSER_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+
+      - name: 'Get composer cache directory'
+        id: 'composer-cache'
+        run: 'echo "dir=$(composer config cache-files-dir)" >> $FORGEJO_OUTPUT'
+
+      - name: 'Cache dependencies'
+        uses: 'actions/cache@v4'
+        with:
+          path: '${{ steps.composer-cache.outputs.dir }}'
+          key: 'composer'
+          restore-keys: 'composer'
 
       - name: 'Install dependencies'
         run: 'composer update --prefer-dist --no-progress'
@@ -91,8 +100,8 @@ jobs:
       - name: 'Coding Guideline'
         run: './vendor/bin/php-cs-fixer fix --dry-run --diff'
 
-  tests-mysql:
-    runs-on: 'ubuntu-latest'
+  tests:
+    runs-on: 'self-hosted'
     needs:
       - xml-linting
     strategy:
@@ -113,16 +122,24 @@ jobs:
           - php-version: '8.4'
             typo3-version: '^13.4'
     steps:
-      - uses: 'actions/checkout@v3'
+      - uses: 'actions/checkout@v5'
 
       - name: 'Install PHP'
-        uses: 'shivammathur/setup-php@v2'
+        uses: 'actions/setup-php@v2'
         with:
           php-version: '${{ matrix.php-version }}'
-          coverage: 'none'
-          tools: 'composer:v2'
-        env:
-          COMPOSER_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+          extensions: 'sqlite3'
+
+      - name: 'Get composer cache directory'
+        id: 'composer-cache'
+        run: 'echo "dir=$(composer config cache-files-dir)" >> $FORGEJO_OUTPUT'
+
+      - name: 'Cache dependencies'
+        uses: 'actions/cache@v4'
+        with:
+          path: '${{ steps.composer-cache.outputs.dir }}'
+          key: 'composer'
+          restore-keys: 'composer'
 
       - name: 'Install dependencies with expected TYPO3 version'
         run: 'composer require --prefer-dist --no-progress "typo3/cms-core:${{ matrix.typo3-version }}"'
@@ -131,7 +148,7 @@ jobs:
         run: './vendor/bin/phpunit --testdox'
 
   code-quality:
-    runs-on: 'ubuntu-latest'
+    runs-on: 'self-hosted'
     strategy:
       matrix:
         include:
@@ -150,16 +167,23 @@ jobs:
           - php-version: '8.4'
             typo3-version: '^13.4'
     steps:
-      - uses: 'actions/checkout@v3'
+      - uses: 'actions/checkout@v5'
 
       - name: 'Install PHP'
-        uses: 'shivammathur/setup-php@v2'
+        uses: 'actions/setup-php@v2'
         with:
           php-version: '${{ matrix.php-version }}'
-          coverage: 'none'
-          tools: 'composer:v2'
-        env:
-          COMPOSER_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+
+      - name: 'Get composer cache directory'
+        id: 'composer-cache'
+        run: 'echo "dir=$(composer config cache-files-dir)" >> $FORGEJO_OUTPUT'
+
+      - name: 'Cache dependencies'
+        uses: 'actions/cache@v4'
+        with:
+          path: '${{ steps.composer-cache.outputs.dir }}'
+          key: 'composer'
+          restore-keys: 'composer'
 
       - name: 'Install dependencies with expected TYPO3 version'
         run: 'composer require --prefer-dist --no-progress "typo3/cms-backend:${{ matrix.typo3-version }}" "typo3/cms-core:${{ matrix.typo3-version }}" "typo3/cms-dashboard:${{ matrix.typo3-version }}"'
