@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace Codappix\PageSpecificTypoScript\Service;
 
 use InvalidArgumentException;
+use Override;
 use TYPO3\CMS\Core\Package\PackageManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -39,6 +40,7 @@ final class TypoScriptService implements TypoScriptServiceInterface
     ) {
     }
 
+    #[Override]
     public function getFilesForPage(int $pageUid, string $type): array
     {
         $files = [];
@@ -52,6 +54,7 @@ final class TypoScriptService implements TypoScriptServiceInterface
         return array_values(array_filter($files));
     }
 
+    #[Override]
     public function getIncludeForFile(string $fileName): string
     {
         return '@import "EXT:' . $fileName . '"';

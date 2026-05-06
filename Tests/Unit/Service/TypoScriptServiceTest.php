@@ -26,6 +26,7 @@ namespace Codappix\PageSpecificTypoScript\Tests\Unit\Service;
 use Codappix\PageSpecificTypoScript\Service\TypoScriptService;
 use Codappix\PageSpecificTypoScript\Tests\Unit\Fixture\PackageManagerFixture;
 use InvalidArgumentException;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Stub;
@@ -39,6 +40,7 @@ final class TypoScriptServiceTest extends TestCase
 
     protected TypoScriptService $subject;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

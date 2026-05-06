@@ -25,6 +25,7 @@ namespace Codappix\PageSpecificTypoScript\Tests\Unit\EventListener;
 
 use Codappix\PageSpecificTypoScript\EventListener\PagesTsConfigIncludeEventListener;
 use Codappix\PageSpecificTypoScript\Service\TypoScriptServiceInterface;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Stub;
@@ -39,6 +40,7 @@ final class PagesTsConfigIncludeEventListenerTest extends TestCase
 
     private PagesTsConfigIncludeEventListener $subject;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

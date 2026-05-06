@@ -25,6 +25,7 @@ namespace Codappix\PageSpecificTypoScript\Tests\Unit\EventListener;
 
 use Codappix\PageSpecificTypoScript\EventListener\TemplateServiceEventListener;
 use Codappix\PageSpecificTypoScript\Service\TypoScriptServiceInterface;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Stub;
@@ -41,6 +42,7 @@ final class TemplateServiceEventListenerTest extends TestCase
 
     private AfterTemplatesHaveBeenDeterminedEvent $event;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
