@@ -72,8 +72,8 @@ final class TypoScriptService implements TypoScriptServiceInterface
             $type
         );
 
-        $absoluePath = GeneralUtility::getFileAbsFileName('EXT:' . $file);
-        if (is_file($absoluePath)) {
+        $absolutePath = GeneralUtility::getFileAbsFileName('EXT:' . $file);
+        if (is_file($absolutePath)) {
             return $file;
         }
 
