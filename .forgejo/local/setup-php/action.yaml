@@ -28,12 +28,3 @@ runs:
         path: '${{ steps.composer-cache.outputs.dir }}'
         key: "composer-${{ hashFiles('composer.*') }}"
         restore-keys: 'composer'
-
-    - name: 'Debug composer cache'
-      run: 'echo ${{ steps.composer-cache.outputs.dir }}'
-
-    - name: 'Debug composer cache'
-      run: 'ls -lah ${{ steps.composer-cache.outputs.dir }}'
-
-    - name: 'Debug composer cache'
-      run: 'apt add -y tree ; tree ${{ steps.composer-cache.outputs.dir }}'

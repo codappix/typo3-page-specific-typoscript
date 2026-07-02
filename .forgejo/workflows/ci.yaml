@@ -18,32 +18,20 @@ jobs:
         with:
           php-version: '8.3'
 
-      # - name: 'Validate composer.json'
-      #   run: 'composer validate'
-
-      - name: 'Debug composer cache'
-        run: 'ls -lah ${{ steps.composer-cache.outputs.dir }}'
-
-      - name: 'Debug composer cache'
-        run: 'tree ${{ steps.composer-cache.outputs.dir }}'
+      - name: 'Validate composer.json'
+        run: 'composer validate'
 
       - name: 'Install PHP dependencies'
         run: 'composer update --prefer-dist --no-progress'
 
-      - name: 'Debug composer cache'
-        run: 'ls -lah ${{ steps.composer-cache.outputs.dir }}'
+      - name: 'Coding Guideline'
+        run: './vendor/bin/php-cs-fixer fix --dry-run --diff'
 
-      - name: 'Debug composer cache'
-        run: 'apt add -y tree ; tree ${{ steps.composer-cache.outputs.dir }}'
-
-      # - name: 'Coding Guideline'
-      #   run: './vendor/bin/php-cs-fixer fix --dry-run --diff'
-
-      # - name: 'Lint PHPUnit configuration file'
-      #   uses: 'actions/local/qa-xmllint@v1'
-      #   with:
-      #     schema: 'vendor/phpunit/phpunit/phpunit.xsd'
-      #     file: 'phpunit.xml.dist'
+      - name: 'Lint PHPUnit configuration file'
+        uses: 'actions/local/qa-xmllint@v1'
+        with:
+          schema: 'vendor/phpunit/phpunit/phpunit.xsd'
+          file: 'phpunit.xml.dist'
 
   advanced-qa:
     runs-on: 'self-hosted'
@@ -54,49 +42,34 @@ jobs:
         include:
           - php-version: '8.1'
             typo3-version: '^12.4'
-          # - php-version: '8.2'
-          #   typo3-version: '^12.4'
-          # - php-version: '8.3'
-          #   typo3-version: '^12.4'
-          # - php-version: '8.4'
-          #   typo3-version: '^12.4'
+          - php-version: '8.2'
+            typo3-version: '^12.4'
+          - php-version: '8.3'
+            typo3-version: '^12.4'
+          - php-version: '8.4'
+            typo3-version: '^12.4'
           - php-version: '8.2'
             typo3-version: '^13.4'
-          # - php-version: '8.3'
-          #   typo3-version: '^13.4'
-          # - php-version: '8.4'
-          #   typo3-version: '^13.4'
+          - php-version: '8.3'
+            typo3-version: '^13.4'
+          - php-version: '8.4'
+            typo3-version: '^13.4'
     steps:
       - uses: 'actions/checkout@v6'
-
-      - name: 'Debug composer cache'
-        run: 'echo $(composer config cache-files-dir)'
-
-      - name: 'Debug composer cache'
-        run: 'ls -lah $(composer config cache-files-dir)'
-
-      - name: 'Debug composer cache'
-        run: 'tree $(composer config cache-files-dir)'
 
       - uses: './.forgejo/local/setup-php'
         with:
           php-version: '${{ matrix.php-version }}'
           php-extensions: 'sqlite3'
 
-      - name: 'Debug composer cache'
-        run: 'ls -lah $(composer config cache-files-dir)'
-
-      - name: 'Debug composer cache'
-        run: 'apt add -y tree ; tree ${{ steps.composer-cache.outputs.dir }}'
-
-      # - name: 'PHP lint'
-      #   run: "find .*.php Classes Configuration Tests -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l"
+      - name: 'PHP lint'
+        run: "find .*.php Classes Configuration Tests -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l"
 
       - name: 'Install dependencies with expected TYPO3 version'
         run: 'composer require --prefer-dist --no-progress "typo3/cms-core:${{ matrix.typo3-version }}"'
 
-      # - name: 'Code Quality (by PHPStan)'
-      #   run: './vendor/bin/phpstan analyse'
+      - name: 'Code Quality (by PHPStan)'
+        run: './vendor/bin/phpstan analyse'
 
-#       - name: 'PHPUnit Tests'
-#         run: './vendor/bin/phpunit --testdox'
+      - name: 'PHPUnit Tests'
+        run: './vendor/bin/phpunit --testdox'
