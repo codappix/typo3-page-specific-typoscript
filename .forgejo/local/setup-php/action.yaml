@@ -1,0 +1,39 @@
+name: 'Setup PHP'
+description: 'Setup PHP environment'
+
+inputs:
+  php-version:
+    description: 'The PHP Version to use.'
+    required: true
+  php-extensions:
+    default: ''
+    description: 'Comma separated list extensions to install'
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - name: 'Install PHP'
+      uses: 'actions/setup-php@v2'
+      with:
+        php-version: '${{ inputs.php-version }}'
+        extensions: '${{ inputs.php-extensions }}'
+
+    - name: 'Get Composer Cache Directory'
+      id: 'composer-cache'
+      run: 'echo "dir=$(composer config cache-files-dir)" >> $FORGEJO_OUTPUT'
+
+    - uses: 'actions/cache@v5'
+      with:
+        path: '${{ steps.composer-cache.outputs.dir }}'
+        key: "composer-${{ hashFiles('composer.*') }}"
+        restore-keys: 'composer'
+
+    - name: 'Debug composer cache'
+      run: 'echo ${{ steps.composer-cache.outputs.dir }}'
+
+    - name: 'Debug composer cache'
+      run: 'ls -lah ${{ steps.composer-cache.outputs.dir }}'
+
+    - name: 'Debug composer cache'
+      run: 'apt add -y tree ; tree ${{ steps.composer-cache.outputs.dir }}'
