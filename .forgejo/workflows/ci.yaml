@@ -14,15 +14,31 @@ jobs:
 
       - uses: 'actions/local/qa-forgejo-folder@v1'
 
-      - uses: 'actions/local/setup-php@v1'
+      - name: 'Install PHP'
+        uses: 'actions/setup-php@v2'
         with:
           php-version: '8.3'
+
+      - name: 'Get Composer Cache Directory'
+        id: 'composer-cache'
+        run: 'echo "dir=$(composer config cache-files-dir)" >> $FORGEJO_OUTPUT'
+
+      - uses: 'actions/cache/restore@v5'
+        with:
+          path: '${{ steps.composer-cache.outputs.dir }}'
+          key: "composer-${{ hashFiles('**/composer.*') }}"
+          restore-keys: 'composer'
 
       - name: 'Validate composer.json'
         run: 'composer validate'
 
       - name: 'Install PHP dependencies'
         run: 'composer update --prefer-dist --no-progress'
+
+      - uses: 'actions/cache/save@v5'
+        with:
+          path: '${{ steps.composer-cache.outputs.dir }}'
+          key: "composer-${{ hashFiles('**/composer.*') }}"
 
       - name: 'Coding Guideline'
         run: './vendor/bin/php-cs-fixer fix --dry-run --diff'
@@ -57,13 +73,24 @@ jobs:
     steps:
       - uses: 'actions/checkout@v6'
 
-      - uses: 'actions/local/setup-php@v1'
+      - name: 'Install PHP'
+        uses: 'actions/setup-php@v2'
         with:
           php-version: '${{ matrix.php-version }}'
           php-extensions: 'sqlite3'
 
       - name: 'PHP lint'
         run: "find .*.php Classes Configuration Tests -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l"
+
+      - name: 'Get Composer Cache Directory'
+        id: 'composer-cache'
+        run: 'echo "dir=$(composer config cache-files-dir)" >> $FORGEJO_OUTPUT'
+
+      - uses: 'actions/cache/restore@v5'
+        with:
+          path: '${{ steps.composer-cache.outputs.dir }}'
+          key: "composer-${{ hashFiles('**/composer.*') }}"
+          restore-keys: 'composer'
 
       - name: 'Install dependencies with expected TYPO3 version'
         run: 'composer require --prefer-dist --no-progress "typo3/cms-core:${{ matrix.typo3-version }}"'
