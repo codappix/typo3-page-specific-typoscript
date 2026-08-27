@@ -6,34 +6,36 @@ name: 'CI'
 jobs:
   base-qa:
     runs-on: 'self-hosted'
+    container:
+      image: 'code.codappix.com/globals/docker/ci:latest'
     steps:
       - uses: 'actions/checkout@v6'
 
-      - uses: 'actions/local/qa-forgejo-folder@v1'
+      - uses: 'actions/local/qa-forgejo-folder@migrate-to-own-ci-image'
 
-      - uses: 'actions/local/qa-typos@v1'
-
-      - uses: 'actions/local/setup-php@v1'
-        with:
-          php-version: '8.3'
+      - uses: 'actions/local/qa-typos@migrate-to-own-ci-image'
 
       - name: 'Validate composer.json'
         run: 'composer validate'
 
-      - name: 'Install PHP dependencies'
-        run: 'composer update --prefer-dist --no-progress'
+      - uses: 'actions/local/setup-php@migrate-to-own-ci-image'
+        with:
+          php-version: '8.3'
+          composer-command: 'composer update --prefer-dist --no-progress'
 
       - name: 'Coding Guideline'
         run: './vendor/bin/php-cs-fixer fix --dry-run --diff'
 
       - name: 'Lint PHPUnit configuration file'
-        uses: 'actions/local/qa-xmllint@v1'
+        uses: 'actions/local/qa-xmllint@migrate-to-own-ci-image'
         with:
           schema: 'vendor/phpunit/phpunit/phpunit.xsd'
           file: 'phpunit.xml.dist'
 
   advanced-qa:
     runs-on: 'self-hosted'
+    container:
+      image: 'code.codappix.com/globals/docker/ci:latest'
     needs:
       - 'base-qa'
     strategy:
@@ -56,16 +58,13 @@ jobs:
     steps:
       - uses: 'actions/checkout@v6'
 
-      - uses: 'actions/local/setup-php@v1'
+      - uses: 'actions/local/setup-php@migrate-to-own-ci-image'
         with:
           php-version: '${{ matrix.php-version }}'
-          php-extensions: 'sqlite3'
+          composer-command: 'composer require --prefer-dist --no-progress "typo3/cms-core:${{ matrix.typo3-version }}"'
 
       - name: 'PHP lint'
         run: "find .*.php Classes Configuration Tests -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l"
-
-      - name: 'Install dependencies with expected TYPO3 version'
-        run: 'composer require --prefer-dist --no-progress "typo3/cms-core:${{ matrix.typo3-version }}"'
 
       - name: 'Dependency Check'
         run: './vendor/bin/composer-dependency-analyser'
